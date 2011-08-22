@@ -53,6 +53,14 @@ Simply require this library before you use it:
 If you're using Rails, you could include this gem in your configuration, i.e. in `environment.rb`
 
     config.gem 'chargify_api_ares'
+
+Or for use with Bundler
+If you want the original version
+    gem 'chargify_api_ares'
+
+If you want this version
+    gem 'chargify_api_ares', :git => "git://github.com/jwoertink/chargify_api_ares.git"
+    
     
 
 Now you'll have access to classes the interact with the Chargify API, such as:
