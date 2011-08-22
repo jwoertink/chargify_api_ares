@@ -224,29 +224,48 @@ module Chargify
       Product.new get(:lookup, :handle => handle)
     end
 
-    protected
-
     # Products are created in the scope of a ProductFamily, i.e. /product_families/nnn/products
     #
-    # This alters the collection path such that it uses the product_family_id that is set on the
-    # attributes.
-    def create
-      pfid = begin
-        self.product_family_id
-      rescue NoMethodError
-        0
-      end
-      connection.post("/product_families/#{pfid}/products.#{self.class.format.extension}", encode, self.class.headers).tap do |response|
-        self.id = id_from_response(response)
-        load_attributes_from_response(response)
-      end
+    # required attributes
+    #   name, product_family_id, price_in_cents, interval
+    def self.create(attrs = {})
+      raise MissingAttributesError if attrs.empty?
+      pfid = attrs["product_family_id"] || 0
+      attrs.merge!("product_family" => ProductFamily.find(pfid).try(:attributes), "product_family_id" => pfid)
+      p = Product.new attrs
+      p.send(:save) # Need to make sure it returns a Net::HTTPCreated 201
+      return p
     end
+        
+    protected
+      
+      # No clue if this actually needs to be protected or not...
+      # Create the connection, and post the variables saving the object.
+      def save
+        connection.post("/product_families/#{product_family_id}/products.#{self.class.format.extension}", encode, self.class.headers).tap do |response|
+          self.id = id_from_response(response)
+          load_attributes_from_response(response)
+        end
+      end
+    
+    class MissingAttributesError < StandardError; end
   end
 
   class ProductFamily < Base
     def self.find_by_handle(handle, attributes = {})
       ProductFamily.find(:one, :from => :lookup, :handle => handle)
     end
+    
+    # Adding this method as a helper
+    # family = Chargify::ProductFamily.first
+    # family.products.each { |product| puts product.name }
+    def products
+      puts self.class.headers
+      # connection.get("/product_family/#{id}/products.#{self.class.format.extension}", self.class.headers).tap do |response|
+      #   puts response
+      # end
+    end
+    
   end
 
   class Usage < Base

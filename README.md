@@ -59,7 +59,7 @@ Now you'll have access to classes the interact with the Chargify API, such as:
 
 `Chargify::Product`  
 `Chargify::Customer`  
-`Chargifiy::Subscription`
+`Chargify::Subscription`
 
 Check out the examples in the `samples` directory.  If you're not familiar with how ActiveResource works,
 you may be interested in some [ActiveResource Documentation](http://apidock.com/rails/ActiveResource/Base)
