@@ -34,6 +34,7 @@ GEM
     rspec-instafail (0.1.8)
     rspec-mocks (2.6.0)
     ruby-progressbar (0.0.10)
+    shoulda (2.11.3)
 
 PLATFORMS
   ruby
@@ -45,3 +46,4 @@ DEPENDENCIES
   fakeweb
   fuubar
   rspec
+  shoulda
