@@ -253,17 +253,14 @@ module Chargify
 
   class ProductFamily < Base
     def self.find_by_handle(handle, attributes = {})
-      ProductFamily.find(:one, :from => :lookup, :handle => handle)
+      ProductFamily.new get(:lookup, :handle => handle)
     end
     
     # Adding this method as a helper
     # family = Chargify::ProductFamily.first
     # family.products.each { |product| puts product.name }
     def products
-      puts self.class.headers
-      # connection.get("/product_family/#{id}/products.#{self.class.format.extension}", self.class.headers).tap do |response|
-      #   puts response
-      # end
+      @products ||= Product.all.collect { |p| p if p.product_family.id == id }.compact
     end
     
   end
