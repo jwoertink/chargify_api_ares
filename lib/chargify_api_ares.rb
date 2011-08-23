@@ -228,10 +228,12 @@ module Chargify
     #
     # required attributes
     #   name, product_family_id, price_in_cents, interval
+    # NOTE: may need to symbolize_keys! first.
     def self.create(attrs = {})
       raise MissingAttributesError if attrs.empty?
-      pfid = attrs["product_family_id"] || 0
-      attrs.merge!("product_family" => ProductFamily.find(pfid).try(:attributes), "product_family_id" => pfid)
+      
+      pfid = attrs[:product_family_id] || 0
+      attrs.merge!(:product_family => ProductFamily.find(pfid).try(:attributes), :product_family_id => pfid)
       p = Product.new attrs
       p.send(:save) # Need to make sure it returns a Net::HTTPCreated 201
       return p
